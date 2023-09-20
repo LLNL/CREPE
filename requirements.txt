@@ -1,0 +1,9 @@
+numpy
+torch
+torchvision
+tqdm
+matplotlib
+colorama
+pillow
+argparse
+git+https://github.com/openai/CLIP.git
