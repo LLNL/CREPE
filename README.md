@@ -22,8 +22,27 @@ pip install -r requirements.txt
 ```
 
 ## Dataset
-We use the Visual Genome benchmark dataset for this project. You can download it from the [official website](http://visualgenome.org/). After downloading, place the dataset in the `./datasets` directory.
 
+We use the Visual Genome benchmark dataset for this project, specifically processed for individual predicates and neatly organized into `datasets/pred_dicts_train` and `datasets/pred_dicts_test`.
+
+Each directory contains pickle files for every predicate in the dataset. The structure of the dictionaries within these files is as follows:
+
+```plaintext
+{
+  "img_name": "datasets/images/image.jpg",          // Image path
+  "sub_id": 123,                            // Subject identifier
+  "obj_id": 456,                            // Object identifier
+  "union_img_embedding": [0.123, ..., 0.789],  // CLIP image embeddings
+  "subject text emb": [0.234, ..., 0.890],  // CLIP text embeddings for the subject
+  "object text emb": [0.345, ..., 0.901],   // CLIP text embeddings for the object
+  "gt_predicate_id": 7                      // Ground truth predicate ID
+}
+```
+This structured format facilitates efficient data handling for various applications in visual semantic analysis.
+
+Due to their substantial size, dictionaries for the "on" and "has" predicates are not included in the repository. These files can be accessed and downloaded separately from [this link](https://drive.google.com/drive/folders/1_Fj-g_rCJBvzrR6e4dcXftrd0DyD5udu?usp=sharing).
+
+The images can be downloaded from the [official website](http://visualgenome.org/). After downloading, please place the dataset in the `./datasets` directory.
 ## Training the Models
 
 ### Training the Prompter
