@@ -23,24 +23,24 @@ pip install -r requirements.txt
 
 ## Dataset
 
-We use the Visual Genome benchmark dataset for this project, specifically processed for individual predicates and neatly organized into `datasets/pred_dicts_train` and `datasets/pred_dicts_test`.
+We use the Visual Genome benchmark dataset for this project, specifically processed for individual predicates and organized into `datasets/pred_dicts_train_cmr`, `datasets/pred_dicts_test_cmr`.
 
 Each directory contains pickle files for every predicate in the dataset. The structure of the dictionaries within these files is as follows:
 
 ```plaintext
 {
-  "img_name": "datasets/images/image.jpg",          // Image path
+  "img_name": "57646.jpg",          // Image name
   "sub_id": 123,                            // Subject identifier
   "obj_id": 456,                            // Object identifier
-  "union_img_embedding": [0.123, ..., 0.789],  // CLIP image embeddings
-  "subject text emb": [0.234, ..., 0.890],  // CLIP text embeddings for the subject
-  "object text emb": [0.345, ..., 0.901],   // CLIP text embeddings for the object
+  "union_img_emb": [0.123, ..., 0.789],  // CLIP image embeddings
+  "union_cmr_emb": [0.234, ..., 0.890],  // CLIP text embeddings for the subject
   "gt_predicate_id": 7                      // Ground truth predicate ID
+  "im_width":224  // Width of the image
+  "im_height"224  // height of the image
 }
 ```
-This structured format facilitates efficient data handling for various applications in visual semantic analysis.
 
-Due to their substantial size, dictionaries for the "on" and "has" predicates are not included in the repository. These files can be accessed and downloaded separately from [this link](https://drive.google.com/drive/folders/1_Fj-g_rCJBvzrR6e4dcXftrd0DyD5udu?usp=sharing).
+Due to their substantial size, dictionaries for the "on" and "has" predicates are not included in the repository. These files can be accessed and downloaded separately from [this link](https://drive.google.com/drive/folders/1_Fj-g_rCJBvzrR6e4dcXftrd0DyD5udu?usp=sharing). Please ensure the downloaded pickle files goes into the respective directories (pred_dicts_train_cmr, pred_dicts_test_cmr)
 
 The images can be downloaded from the [official website](http://visualgenome.org/). After downloading, please place the dataset in the `./datasets` directory.
 ## Training the Models
@@ -59,9 +59,10 @@ You can also specify other command line arguments as per your requirements.
 ### Training the Classifier
 After training the prompter, the obtained features are used for training the classifier. You can train the classifier using the `train_classifier.py` script as follows:
 
-```bash
+Make sure to update the `checkpoint_dir` and `out_dir` to the relevant paths
 
-python legacy_train_classifier.py --batch_size=1 --learning_rate 0.001 --which_epoch=500 --train_epochs 100 --save_freq 1 --use_cuda True \
+```bash
+python train_classifier.py --batch_size=1 --learning_rate 0.001 --which_epoch=500 --train_epochs 100 --save_freq 1 --use_cuda True \
         --n_context_vectors=8 --token_position middle --learnable_UVTransE True --update_UVTransE True --is_non_linear True --num_predicates=50 \
         --checkpoints_dir_prompt=output/2023-05-09_19-18-07/checkpoints --out_dir=output/2023-05-09_19-18-07 \
         --data_dir='datasets/VG/np_files'
