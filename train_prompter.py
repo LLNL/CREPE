@@ -148,8 +148,6 @@ if __name__ == "__main__":
     parser.add_argument('--which_epoch', type=int, default=0, help='Epoch number for loading the prompter model checkpoint')
     
     # Model parameters
-    parser.add_argument('--C', type=int, default=1, choices=[1], help='Cross modal retrival no of crops')
-    parser.add_argument('--K', type=int, default=1, choices=[1], help='Cross modal top K retrival ')
     parser.add_argument('--n_contex_vectors', type=int, default=4, help='Number of context vectors')
     parser.add_argument('--token_position', type=str, default='middle', help='position of the learnable context token')
     parser.add_argument('--num_predicates', type=int, default=5, help='Number of predicates of interest')

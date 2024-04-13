@@ -24,9 +24,9 @@ class VGPredicateDataset(torch.utils.data.Dataset):
         self.clip_model, self.clip_processor = clip.load("ViT-B/32", device=device)
         
         if test:
-            predicate_dict_dir = 'datasets/pred_dicts_test'
+            predicate_dict_dir = 'datasets/pred_dicts_test_cmr'
         else:
-            predicate_dict_dir = 'datasets/pred_dicts_train'
+            predicate_dict_dir = 'datasets/pred_dicts_train_cmr'
             
         self.triplet_data_dict = {}
         dict_paths = glob.glob(f'{predicate_dict_dir}/*')
@@ -53,15 +53,26 @@ class VGPredicateDataset(torch.utils.data.Dataset):
                 predicate_splits = json.load(json_file)
             predicates_of_interest = predicate_splits[f'{num_predicates}_predicates']
             
+        self.predicates_of_interest = list(predicates_of_interest.keys())
+
         #######################################################################################
 
         # Split the triplet data for each category
         
         self.triplet_data = []
         for category in predicates_of_interest:
-            self.triplet_data += self.triplet_data_dict[category]
-            print(f'# of "{category}" triplets: {len(self.triplet_data_dict[category])}')
+            # train_data, test_data = train_test_split(self.triplet_data_dict[category], test_size=0.2, random_state=42)
+            # if self.test:
+            #     self.triplet_data_dict[category] = test_data
+            #     self.triplet_data += test_data
+            # else:
+            #     self.triplet_data_dict[category] = train_data
+            #     self.triplet_data += train_data
 
+            self.triplet_data += self.triplet_data_dict[category]
+
+            
+            print(f'No of "{category}" triplets: {len(self.triplet_data_dict[category])}')
         random.shuffle(self.triplet_data)
         print('Total Triplet data: ', len(self.triplet_data))
 
@@ -79,61 +90,41 @@ class VGPredicateDataset(torch.utils.data.Dataset):
         anchor_data = self.triplet_data[idx]
         gt_predicate_id = anchor_data["gt_predicate_id"]
         
-        # Select anchor
-        anchor_union_emb, anchor_sub_label, anchor_sub_emb, anchor_obj_label, anchor_obj_emb, anchor_gt_predicate_id = self.extract_embeddings(anchor_data)
-        anchor_phrase = f'{anchor_sub_label} {anchor_obj_label}'  # Merging subject and object labels
+        # load the images and convert them to tensors
+        img_path = anchor_data["img_name"]
 
-        # Create adverserial phrases for anchor by replacing subject and object labels
-        sub_adver = random.choice([x for x in self.entity_categories if x != anchor_sub_label])
-        obj_adver = random.choice([x for x in self.entity_categories if x != anchor_obj_label])
-        anchor_sub_adverserial_phrase = f'{sub_adver} {anchor_obj_label}'
-        anchor_obj_adverserial_phrase = f'{anchor_sub_label} {obj_adver}'
+        sub_id_ = int(anchor_data["sub_id"])
+        obj_id_ = int(anchor_data["obj_id"])
 
-        gt_predicate_label = self.predicate_categories[gt_predicate_id]
+        sub_label = self.entity_categories[anchor_data["sub_id"]]
+        obj_label = self.entity_categories[anchor_data["obj_id"]]
 
-        # Randomly choose a positive predicate
-        positive_data = random.choice(self.triplet_data_dict[gt_predicate_label])
-        positive_union_emb, positive_sub_label, positive_sub_emb, positive_obj_label, positive_obj_emb, positive_gt_predicate_id = self.extract_embeddings(positive_data)
-        positive_phrase = f'{positive_sub_label} {positive_obj_label}' 
+        sub_txt_emb = self.entity_f[sub_id_].squeeze(0)
+        obj_txt_emb = self.entity_f[obj_id_].squeeze(0)
 
-        # Randomly choose a negative predicate
-        remaining_gt_predicates = [predicate for predicate in self.predicate_categories if predicate != gt_predicate_label]
-        negative_predicate = random.choice(remaining_gt_predicates)
-        negative_data = random.choice(self.triplet_data_dict[negative_predicate])
-        negative_union_emb, negative_sub_label, negative_sub_emb, negative_obj_label, negative_obj_emb, negative_gt_predicate_id = self.extract_embeddings(negative_data)
-        negative_phrase = f'{negative_sub_label} {negative_obj_label}' 
+        phrase = f'{sub_label} {obj_label}'
+
+        union_img_embedding = anchor_data["union_img_embedding"]
+        union_cmr_embedding = anchor_data["union_cmr_embedding"]
 
         out_dict = {
-            'anchor_union_emb': anchor_union_emb,
-            'anchor_sub_emb': anchor_sub_emb,
-            'anchor_sub_label': anchor_sub_label,
-            'anchor_obj_label': anchor_obj_label,
-            'anchor_obj_emb': anchor_obj_emb,
-            'anchor_phrase': anchor_phrase,
-            'anchor_gt_predicate_id': anchor_gt_predicate_id,
 
-            'positive_union_emb': positive_union_emb,
-            'positive_sub_emb': positive_sub_emb,
-            'positive_sub_label': positive_sub_label,
-            'positive_obj_label': positive_obj_label,
-            'positive_obj_emb': positive_obj_emb,
-            'positive_phrase': positive_phrase,
-            'positive_gt_predicate_id': positive_gt_predicate_id,
+            'union_img_emb': union_img_embedding,
+            'union_cmr_emb': union_cmr_embedding,
+            'sub_emb': sub_txt_emb,
+            'obj_emb': obj_txt_emb,
+            'sub_label': sub_label,
+            'obj_label': obj_label,
+            'phrases': phrase,
+            'gt_predicate_id': gt_predicate_id,
+            'im_width': anchor_data['im_width'],
+            'im_height': anchor_data['im_height'],
+            'img_name': img_path,
 
-            'negative_union_emb': negative_union_emb,
-            'negative_sub_emb': negative_sub_emb,
-            'negative_sub_label': negative_sub_label,
-            'negative_obj_label': negative_obj_label,
-            'negative_obj_emb': negative_obj_emb,
-            'negative_phrase': negative_phrase,
-            'negative_gt_predicate_id': negative_gt_predicate_id,
-
-            'anchor_sub_adverserial_phrase': anchor_sub_adverserial_phrase,
-            'anchor_obj_adverserial_phrase': anchor_obj_adverserial_phrase,
         }
         
         if self.debug:
-            self.display(anchor_data, positive_data, negative_data, out_dict)
+            self.display(anchor_data, out_dict)
         return out_dict
     
     def extract_embeddings(self,data):
@@ -150,24 +141,24 @@ class VGPredicateDataset(torch.utils.data.Dataset):
         obj_txt_emb = self.entity_f[obj_id_].squeeze(0)
 
         union_img_embedding = data["union_img_embedding"]
+        union_cmr_embedding = data["union_cmr_embedding"]
         
         
-        return union_img_embedding, sub_label, sub_txt_emb, obj_label, obj_txt_emb, data["gt_predicate_id"]
+        return union_img_embedding, union_cmr_embedding, sub_label, sub_txt_emb, obj_label, obj_txt_emb, data["gt_predicate_id"]
 
     def __len__(self):
         return len(self.triplet_data)
 
-    def display(self, anchor_data, positive_data, negative_data, out_dict):
+    def display(self, anchor_data, out_dict):
         
         def compare_embeddings(data, out_dict, data_type):
             # load the images and convert them to tensors
-            img_path = data["img_name"]
-            img = Image.open(os.path.join(self.images_dir, img_path))
-            
-            img_tensor = F.to_tensor(img)
-            img_np = np.array(img_tensor.permute(1, 2, 0).numpy()*255, dtype=np.uint8)
-            img_np = cv2.cvtColor(img_np, cv2.COLOR_RGB2BGR)
-            
+            img_name = data["img_name"]
+
+            image_path = os.path.join(self.images_dir, img_name)
+            img = cv2.imread(image_path)
+            img_np = cv2.resize(img, (out_dict['im_height'], out_dict['im_width']), interpolation = cv2.INTER_AREA)
+
             sub_label = self.entity_categories[data["sub_id"]]
             obj_label = self.entity_categories[data["obj_id"]]
             gt_predicate_label = self.predicate_categories[data["gt_predicate_id"]]
@@ -175,21 +166,29 @@ class VGPredicateDataset(torch.utils.data.Dataset):
             sub_bbox = data["sub_bbox"]
             obj_bbox = data["obj_bbox"]
             union_bbox = data["union_bbox"]
+            phrases = out_dict["phrases"]
+                        
+            # Define the coordinates of the union bounding box
+            x1, y1, x2, y2 = data["union_bbox"]
+            # Crop the union image from the original image
+            union_img = img_np[y1:y2, x1:x2]
+            union_img_pil = Image.fromarray(union_img)
 
-            union_img = F.crop(img, *union_bbox)
-
-            union_img_embedding = self.CLIP_img_encode(union_img)
+            # Save the PIL image
+            union_img_pil.save(f'{data_type}_union.jpg')
+            union_img_embedding = self.CLIP_img_encode(union_img_pil)
             sub_txt_emb = self.CLIP_txt_encode(sub_label)        
             obj_txt_emb = self.CLIP_txt_encode(obj_label)
 
-            union_sim = cos_sim(np.expand_dims(out_dict[f'{data_type}_union_emb'], axis=0), 
+            union_sim = cos_sim(np.expand_dims(out_dict[f'union_img_emb'], axis=0), 
                                 np.expand_dims(union_img_embedding.cpu().detach().numpy(), axis=0))
-            sub_sim = cos_sim(np.expand_dims(out_dict[f'{data_type}_sub_emb'], axis=0), 
+            sub_sim = cos_sim(np.expand_dims(out_dict['sub_emb'], axis=0), 
                               np.expand_dims(sub_txt_emb.cpu().detach().numpy(), axis=0))
-            obj_sim = cos_sim(np.expand_dims(out_dict[f'{data_type}_obj_emb'], axis=0), 
+            obj_sim = cos_sim(np.expand_dims(out_dict['obj_emb'], axis=0), 
                               np.expand_dims(obj_txt_emb.cpu().detach().numpy(), axis=0))
             
             print(f'\n\n{data_type} text:\t {sub_label} {gt_predicate_label} {obj_label}' )
+            print(f'{data_type} phrase:\t {phrases}' )
             print(f'{data_type} union embedding similarity:\t{union_sim}')
             print(f'{data_type} sub embedding similarity:\t{sub_sim}')
             print(f'{data_type} obj embedding similarity:\t{obj_sim}')
@@ -209,12 +208,10 @@ class VGPredicateDataset(torch.utils.data.Dataset):
             cv2.imwrite(f'{data_type}.jpg', img_np)
 
         compare_embeddings(anchor_data, out_dict, 'anchor')
-        compare_embeddings(positive_data, out_dict, 'positive')
-        compare_embeddings(negative_data, out_dict, 'negative')
 
 if __name__ == "__main__":
     # Initialize dataset and get a random item
-    dataset = VGPredicateDataset( predicate_dict_dir='datasets/datasets/pred_dicts_train', 
+    dataset = VGPredicateDataset( predicate_dict_dir='datasets/datasets/pred_dicts_train_cmr', 
                                     images_dir='./datasets/images',
-                                    device='cpu', debug=True, test=False, num_predicates=5)
+                                    device='cpu', debug=True, test=False, num_predicates=50)
     data = dataset[80]
