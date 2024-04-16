@@ -26,6 +26,7 @@ We explore the use of Vision-Language Models (VLMs), particularly CLIP, for pred
     image="assets/img/pipeline.png"
     caption="" 
     alt_text="Alt text" 
+    height=400
 %}
 
 
