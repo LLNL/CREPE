@@ -31,16 +31,18 @@ We explore the use of Vision-Language Models (VLMs), particularly CLIP, for pred
 
 # Quantitative Results
 
+Predicate Estimation Performance: This chart compares the performance of our proposed CREPE method with other state-of-the-art methods on the Visual Genome (VG) dataset, using mean Recall@K (mR@K). The best performing method is highlighted in red, while the second best is in blue. It's worth noting that we are, to our knowledge, the first to report mR@ {5,10,15}, and hence those scores for other methods are not presented.
+
 {% include add_image.html 
     image="assets/img/table.png"
-    caption="Predicate Estimation Performance: This chart compares the performance of our proposed CREPE method with other state-of-the-art methods on the Visual Genome (VG) dataset, using mean Recall@K (mR@K). The best performing method is highlighted in red, while the second best is in blue. It's worth noting that we are, to our knowledge, the first to report mR@ {5,10,15}, and hence those scores for other methods are not presented."
+    caption=""
 
     alt_text="Alt text" 
 %}
-
+The R@50 performance of two models CREPE, UVTransE (vision only), while also showing the frequency of each predicate. Predicates are color-coded based on their categories: `Head' (purple), `Mid' (olive), and `Tail' (orange). The recall values are shown as dotted lines, while the predicate frequencies are displayed as blue bars.
 {% include add_image.html 
     image="assets/img/long_tail.png"
-    caption="The R@50 performance of two models CREPE, UVTransE (vision only), while also showing the frequency of each predicate. Predicates are color-coded based on their categories: `Head' (purple), `Mid' (olive), and `Tail' (orange). The recall values are shown as dotted lines, while the predicate frequencies are displayed as blue bars." 
+    caption="" 
     alt_text="Alt text" 
 %}
 
