@@ -12,8 +12,9 @@ We explore the use of Vision-Language Models (VLMs), particularly CLIP, for pred
     youtube_link="https://www.youtube.com/embed/oHNaM_qXQeY" 
 %} -->
 
+# CLIP Language Priors are insufficient when naively used
 {% include add_image.html 
-    image="assets/img/weak_prior.pdf"
+    image="assets/img/weak_prior.png"
     caption="T-SNE visualization of the predicate representations from UVTransE trained with: (left) CLIP-based image embeddings for subject, object and union box regions; (right) CLIPbased image embedding for the union box, along with CLIP-based text embeddings for subject and object boxes." 
     alt_text="Alt text" 
 %}
@@ -22,7 +23,7 @@ We explore the use of Vision-Language Models (VLMs), particularly CLIP, for pred
 # Method
 
 {% include add_image.html 
-    image="assets/img/pipeline.pdf"
+    image="assets/img/pipeline.png"
     caption="CREPE. An illustration of the proposed approach. CREPE uses learnable context vectors along with image-conditioned bias correction to obtain visually grounded text descriptors for an union image. Note that, the CLIP backbone is used to both perform the optimization for text prompt generation as well as producing the (stxt,otxt,uimg) embeddings for UVTransE." 
     alt_text="Alt text" 
 %}
@@ -49,6 +50,19 @@ We explore the use of Vision-Language Models (VLMs), particularly CLIP, for pred
 
 
 # Results
+
+{% include add_image.html 
+    image="assets/img/table.png"
+    caption="Predicate Estimation Performance: This chart compares the performance of our proposed CREPE method with other state-of-the-art methods on the Visual Genome (VG) dataset, using mean Recall@K (mR@K). The best performing method is highlighted in red, while the second best is in blue. It's worth noting that we are, to our knowledge, the first to report mR@ {5,10,15}, and hence those scores for other methods are not presented."
+
+    alt_text="Alt text" 
+%}
+
+{% include add_image.html 
+    image="assets/img/long_tail.png"
+    caption="The R@50 performance of two models CREPE, UVTransE (vision only), while also showing the frequency of each predicate. Predicates are color-coded based on their categories: `Head' (purple), `Mid' (olive), and `Tail' (orange). The recall values are shown as dotted lines, while the predicate frequencies are displayed as blue bars." 
+    alt_text="Alt text" 
+%}
 
 <!-- 
 SiSTA significantly improves generalization of face attribute detectors. Here is 1−shot SFDA performance (Accuracy %) averaged across different face attribute detection tasks, under varying levels distribution shift severity (Domains A, B & C) and a suite of image corruptions (Domain D). SiSTA consistently improves upon the SoTA baselines, and when combined with toolbox augmentations matches Full Target DA. -->
