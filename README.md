@@ -1,81 +1,168 @@
-# CREPE: CLIP Representation Enhanced Predicate Estimation
+# Academic Website Template Guide
 
-![](https://img.shields.io/badge/pytorch-green)
+This is a simple guide to help you set up a webpage for your academic research project. This template uses Jekyll, a static site generator, which allows you to write your content in Markdown and manage your website with a `_config.yml` file.
 
-This repository hosts the official PyTorch implementation for: "CREPE: Learnable Prompting With CLIP Improves Visual Relationship Prediction"
+## Overview
 
-## Abstract
+The main parts of the site you'll work with are:
 
-This work explores the challenges of leveraging large-scale vision language models, such as CLIP, for visual relationship prediction (VRP), a task vital in understanding the relations between objects in a scene based on both image features and text descriptors. Despite its potential, we find that CLIP's language priors are restrictive in effectively differentiating between various predicates for VRP. Towards this, we present CREPE (CLIP Representation Enhanced Predicate Estimation), which utilizes learnable prompts and a unique contrastive training strategy to derive reliable CLIP representations suited for VRP. CREPE can be seamlessly integrated into any VRP method. Our evaluations on the Visual Genome benchmark illustrate that using representations from CREPE significantly enhances the performance of vanilla VRP methods, such as UVTransE and VCTree, even without additional calibration techniques, showcasing its efficacy as a powerful solution to VRP. CREPE's performance on the Unrel benchmark reveals strong generalization to diverse and previously unseen predicate occurrences, despite lacking explicit training on such examples. 
-## Installation
-The project requires Python 3.8 or later and makes use of PyTorch for training the models.
+1. `_config.yml` - Configuration details for the website.
+2. `index.md` - The main content of your webpage. You will write most of your content here.
+3. `_includes` - This folder contains HTML snippets that can be included in `index.md` using Jekyll's `{% include %}` tag.
 
-1. Clone the repository:
+## Step-by-step guide
+
+### Step 1: Clone the Repository
+
+Start by cloning the academic website template repository to your local machine. Open a terminal, navigate to your desired directory, and run:
+
+```
+git clone https://github.com/YourUsername/academic-website-template.git
+```
+
+This will create a copy of the template in your chosen directory.
+
+### Step 2: Install Ruby and Jekyll
+
+To run your website locally with Jekyll, you need to install Ruby and Jekyll first.
+
+For Ruby, follow the installation guide in the [official Ruby website](https://www.ruby-lang.org/en/documentation/installation/).
+
+For Jekyll, open a terminal and install it with the following command:
+
+```
+gem install jekyll bundler
+```
+
+### Step 3: Edit `_config.yml`
+
+In the root of your cloned repository, you'll see a file called `_config.yml`. This is where you'll put your site's configuration details.
+
+Open `_config.yml` in a text editor, and you'll see a number of variables you can set:
+
+- `title`: The title of your site.
+- `email`: Your email address.
+- `description`: A short description of your site for SEO.
+- `url`: The base URL of your site.
+- `twitter_username`: Your Twitter username.
+- `github_username`: Your GitHub username.
+- `theme`: The Jekyll theme to use.
+
+Here, you can also add custom variables such as `authors`, `affiliations`, `conference` to provide more information about the academic context of your project.
+
+### Step 4: Edit `index.md`
+
+The `index.md` file is the content for your site's homepage. You write the content in Markdown, and Jekyll will convert it to HTML for your site.
+
+The top of `index.md` contains YAML front matter, which sets page-specific variables:
+
+```markdown
+---
+layout: homepage
+---
+
+# Your Project Title
+```
+
+Following the front matter, you can write your page content in Markdown. Headers can be created using "#" for `<h1>`, "##" for `<h2>`, "###" for `<h3>` and so on.
+
+You can also use Jekyll's `{% include %}` tag to include HTML snippets from the `_includes` folder.
+
+For example, to include an image:
+
+```markdown
+{% include add_image.html 
+    image="path_to_image"
+    caption="Your image caption" 
+    alt_text="Alt text for the image" 
+%}
+```
+
+For adding a citation:
+
+```markdown
+{% include add_citation.html text="Your citation text" %}
+```
+
+For adding a contact form:
+
+```markdown
+{% include add_contact.html email="your@email.com" %}
+```
+
+To include a gallery of images:
+
+```markdown
+{% include add_gallery.html data="gallery_data_file_name" %}
+```
+
+### Step 5: Preview Your Site Locally
+
+While you're working on your site, you can preview it by running a local server. In your terminal, navigate to your site's folder and execute the following commands:
+
 ```bash
-git clone https://github.com/LLNL/CREPE
-cd CREPE
+bundle install
+bundle exec jekyll server
 ```
 
-2. Install the required Python packages:
-```bash
-pip install -r requirements.txt
+This will start a Jekyll server and you can view your website live locally. Open your preferred web browser and go to the following URL:
+
+```
+http://localhost:4000
 ```
 
-## Dataset
+This will allow you to see how your site will look once it's published, and you can make live edits to your content.
 
-We use the Visual Genome benchmark dataset for this project, specifically processed for individual predicates and organized into `datasets/pred_dicts_train_cmr`, `datasets/pred_dicts_test_cmr`.
+### Step 6: Publish Your Site to GitHub Pages
 
-Each directory contains pickle files for every predicate in the dataset. The structure of the dictionaries within these files is as follows:
+Once you're satisfied with your website, you can publish it using GitHub Pages.
 
-```plaintext
-{
-  "img_name": "57646.jpg",          // Image name
-  "sub_id": 123,                            // Subject identifier
-  "obj_id": 456,                            // Object identifier
-  "union_img_emb": [0.123, ..., 0.789],  // CLIP image embeddings
-  "union_cmr_emb": [0.234, ..., 0.890],  // CLIP text embeddings for the subject
-  "gt_predicate_id": 7                      // Ground truth predicate ID
-  "im_width":224  // Width of the image
-  "im_height"224  // height of the image
-}
-```
-
-Due to their substantial size, dictionaries for the "on" and "has" predicates are not included in the repository. These files can be accessed and downloaded separately from [this link](https://drive.google.com/drive/folders/1_Fj-g_rCJBvzrR6e4dcXftrd0DyD5udu?usp=sharing). Please ensure the downloaded pickle files goes into the respective directories (pred_dicts_train_cmr, pred_dicts_test_cmr)
-
-The images can be downloaded from the [official website](http://visualgenome.org/). After downloading, please place the dataset in the `./datasets` directory.
-## Training the Models
-
-### Training the Prompter
-The `train_prompter.py` script is used to train the prompter model. You can start the training process using the following command:
+1. Initialize a new Git repository in your project folder by running:
 
 ```bash
-python train_prompter.py --n_contex_vectors 8 --token_position 'middle' --num_predicates 50 \
-        --epochs 500 --learning_rate 2e-3 --batch_size 256 \
-        --use_cuda True --out_dir './output' --data_dir 'datasets/pred_dicts_train_cmr'
+git init
 ```
 
-You can also specify other command line arguments as per your requirements.
-
-### Training the Classifier
-After training the prompter, the obtained features are used for training the classifier. You can train the classifier using the `train_classifier.py` script as follows:
-
-Make sure to update the `checkpoint_dir` and `out_dir` to the relevant paths
+2. Stage and commit all your files:
 
 ```bash
-python train_classifier.py --batch_size=1 --learning_rate 0.001 --which_epoch=500 --train_epochs 100 --save_freq 1 --use_cuda True \
-        --n_context_vectors=8 --token_position middle --learnable_UVTransE True --update_UVTransE True --is_non_linear True --num_predicates=50 \
-        --checkpoints_dir_prompt=output/2023-05-09_19-18-07/checkpoints --out_dir=output/2023-05-09_19-18-07 \
-        --data_dir='datasets/VG/np_files'
+git add .
+git commit -m "Initial commit"
 ```
 
-Just like the prompter, you can specify other command line arguments as per your requirements.
+3. On GitHub, create a new repository under your account. If you want your site to be published at `yourusername.github.io`, name the repository exactly that.
 
-## Acknowledgements
+4. Add the GitHub repository as a remote and push your local repository:
 
-We thanks the authors of the UVTransE and CLIP papers for their inspiring and foundational work. Our sincere thanks also goes to the authors of the [Scene-Graph-Benchmark.pytorch](https://github.com/KaihuaTang/Scene-Graph-Benchmark.pytorch) repository helped us in deriving the FRCNN features and metrics implementation.
+```bash
+git remote add origin https://github.com/YourUsername/yourusername.github.io.git
+git push -u origin master
+```
 
-## Contact
-For any queries, feel free to reach out at `rakshith.2905@gmail.com`.
+5. Go to your repository's settings on GitHub, scroll down to the GitHub Pages section, and set the source to `master branch`.
 
+Your site should now be live at `https://yourusername.github.io`.
 
 ---
+
+
+### Acknowledgements
+
+This project uses the source code from the following repositories:
+
+* [pages-themes/minimal](https://github.com/pages-themes/minimal)
+
+* [orderedlist/minimal](https://github.com/orderedlist/minimal)
+
+* [al-folio](https://github.com/alshedivat/al-folio)
+
+* [minimal-light](https://github.com/yaoyao-liu/minimal-light)
+
+We would like to thank the authors of these projects for their work. This project would not have been possible without their open-source contributions.
+
+In addition, special thanks to [0xcadams](https://github.com/0xcadams) and [jjayaram7](https://github.com/jjayaram7) for their valuable support in creating this project.
+
+---
+
+
+That's it! You've now got a fully-functional academic website up and running. Remember, the beauty of Jekyll is that you can always update your site simply by editing your Markdown files and pushing the changes to GitHub. Enjoy!

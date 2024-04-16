@@ -1,0 +1,63 @@
+# Basic Information
+title: CREPE-Learnable Prompting With CLIP Improves Visual Relationship Prediction
+
+authors:
+  - name: Rakshith Subramanyam
+    link: https://rakshith-2905.github.io/portfolio/
+    equal_contrib: true
+    affiliations: [1]
+  - name: T.S. Jayram
+    link: 
+    affiliations: [2]
+  - name: Rushil Anirudh 
+    link: 
+    affiliations: [3]
+  - name: Jayaraman J. Thiagarajan
+    link: https://jjthiagarajan.com/
+    affiliations: [2]
+
+affiliations:
+  - symbol: '1'
+    name: Arizona State University
+    link: https://www.asu.edu/
+  - symbol: '2'
+    name: Lawrence Livermore National Laboratory
+    link: https://www.llnl.gov/
+
+  - symbol: '3'
+    name: Amazon
+    link: https://www.amazon.com/
+
+contact:
+  emails: rakshith.subramanyam@asu.edu; jjayaram@llnl.gov"
+
+
+conference: 2024 IEEE International Conference on Acoustics, Speech, and Signal Processing (ICASSP 2024), 
+
+# Search Engine Optimization (SEO)
+keywords: Visual Relationship Prediction, CLIP, Prompting, Vision and Language, Computer Vision, Machine Learning, IEEE, ICASSP, 2023
+canonical: https://rakshithsubramanyam.github.io/
+description: "CREPE: Learnable Prompting With CLIP Improves Visual Relationship Prediction"
+
+# Links
+paper_link: https://arxiv.org/abs/2307.04838
+slides_link: 
+poster_link: ./assets/files/poster.pdf
+video_link: 
+github_link: https://github.com/LLNL/CREPE
+
+# Images
+avatar: ./assets/img/avatar.png
+favicon: ./assets/img/favicon.png
+favicon_dark: ./assets/img/favicon-dark.png
+
+# Footnotes
+enable_footnote: false
+
+# The following files will be removed from the generated website.
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - README.md
+  - LICENSE
+  - CNAME

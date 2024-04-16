@@ -1,0 +1,28 @@
+{% assign imgsize = site.static_files | where: "path", include.image | first | img_size %}
+
+<div class="figure-caption text-center" style="font-size: 18px;">
+  {% if include.link %}
+    <a href="{{ include.link }}" target="_blank">
+  {% endif %}
+    <img src="{{ include.image }}" alt="{{ include.alt_text }}" 
+      {% if include.width %}width="{{ include.width }}" {% else %}width="{{ imgsize.width }}" {% endif %} 
+      {% if include.height %}height="{{ include.height }}" {% else %}height="{{ imgsize.height }}" {% endif %}
+      style="margin: auto; object-fit: contain; object-position: center; display: block; transition: filter 0.3s;"
+      class="{% if include.link %}clickable-image{% endif %}"
+    >
+  {% if include.link %}
+    </a>
+  {% endif %}
+  <br>
+  {% if include.caption != "" %}
+    <b>{{ include.type }} </b>{{ include.caption }}
+    <br>
+  {% endif %}
+  <br>
+</div>
+
+<style>
+.clickable-image:hover {
+  filter: brightness(80%);
+}
+</style>

@@ -1,0 +1,15 @@
+- src: "assets/img/VG.pdf"
+  caption: "Each sub-figure illustrates the relationship between the subject (yellow box) and the object (green box), accompanied by the top five predictions made by CREPE. The accurate prediction is emphasized in red. Notably, in the first column of the third row, although the ground truth label is <flag, on, pole>, CREPE makes a more suitable prediction with <flag, hanging from, pole>, thus indicating that the evaluation metrics can be conservative."
+  alt: "Alt text 1"
+
+- src: "assets/img/table.png"
+  caption: "Predicate Estimation Performance: This chart compares the performance of our proposed CREPE method with other state-of-the-art methods on the Visual Genome (VG) dataset, using mean Recall@K (mR@K). The best performing method is highlighted in red, while the second best is in blue. It's worth noting that we are, to our knowledge, the first to report mR@ {5,10,15}, and hence those scores for other methods are not presented."
+  alt: "Alt text 2"
+
+- src: "assets/img/long_tail.png"
+  caption: "The R@50 performance of two models CREPE, UVTransE (vision only), while also showing the frequency of each predicate. Predicates are color-coded based on their categories: `Head' (purple), `Mid' (olive), and `Tail' (orange). The recall values are shown as dotted lines, while the predicate frequencies are displayed as blue bars."
+  alt: "Alt text 3"
+
+- src: "assets/img/Unrel-min.pdf"
+  caption: "Using CREPE to estimate predicates for the Unrel dataset: Each sub-figure illustrates the relationship between the subject (yellow box) and the object (green box), accompanied by the top five predictions made by CREPE. The most suitable prediction is emphasized in red."
+  alt: "Alt text 4"

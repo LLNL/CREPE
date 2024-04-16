@@ -1,0 +1,179 @@
+{% assign gallery_data = site.data[include.data] %}
+
+<div class="gallery">
+  <div class="main-display"> 
+    <div class="main-image">
+      <img src="{{ gallery_data[0].src }}" alt="{{ gallery_data[0].alt }}" class="gallery-image" id="mainImage">
+      <p>{{ gallery_data[0].caption }}</p>
+    </div>
+  </div>
+  <div class="thumbnails">
+    {% for item in gallery_data %}
+      <div class="thumbnail" onclick="changeImage(this, '{{ item.src }}', '{{ item.caption }}', {{ forloop.index0 }})">
+        <img src="{{ item.src }}" alt="{{ item.alt }}" class="gallery-thumbnail">
+      </div>
+    {% endfor %}
+  </div>
+</div>
+
+<script>
+var gallery_data = {{ site.data[include.data] | jsonify }};
+var currentThumbnail = document.querySelector('.thumbnail');
+var currentIndex = 0;
+currentThumbnail.style.boxShadow = '0px 0px 10px 3px rgba(0,0,0,0.75)';
+
+function changeImage(element, src, caption, index) {
+  document.getElementById('mainImage').src = src;
+  document.querySelector('.main-image p').innerText = caption;
+  currentThumbnail.style.boxShadow = 'none';
+  element.style.boxShadow = '0px 0px 10px 3px rgba(0,0,0,0.75)';
+  currentThumbnail = element;
+  currentIndex = index;
+}
+
+// Swipe functionality...
+var startX = 0;
+var startY = 0;
+
+document.getElementById('mainImage').addEventListener('touchstart', function(e) {
+  startX = e.touches[0].clientX;
+  startY = e.touches[0].clientY;
+}, false);
+
+document.getElementById('mainImage').addEventListener('touchend', function(e) {
+  var deltaX = e.changedTouches[0].clientX - startX;
+  var deltaY = e.changedTouches[0].clientY - startY;
+  if (Math.abs(deltaX) > Math.abs(deltaY)) { // If horizontal swipe
+    if (deltaX > 0) { // If swipe to the right
+      if (currentIndex > 0) {
+        currentIndex--;
+        changeImage(
+          document.getElementsByClassName('thumbnail')[currentIndex], 
+          gallery_data[currentIndex].src, 
+          gallery_data[currentIndex].caption, 
+          currentIndex
+        );
+      }
+    } else { // If swipe to the left
+      if (currentIndex < gallery_data.length - 1) {
+        currentIndex++;
+        changeImage(
+          document.getElementsByClassName('thumbnail')[currentIndex], 
+          gallery_data[currentIndex].src, 
+          gallery_data[currentIndex].caption, 
+          currentIndex
+        );
+      }
+    }
+  }
+}, false);
+</script>
+
+<style>
+.gallery {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.main-image {
+  width: 70%;
+  margin-bottom: 20px;
+}
+.gallery-image {
+  width: 100%;
+}
+.thumbnails {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  overflow-x: auto;
+}
+.thumbnail {
+  flex: none;
+  margin: 5px;
+  border: 1px solid #ccc;
+  cursor: pointer;
+  transition: transform 0.3s;
+}
+.thumbnail:hover {
+  transform: scale(1.1);
+}
+.gallery-thumbnail {
+  width: 100px;
+}
+
+.gallery .main-image {
+  width: 100%;
+  margin: auto;
+}
+
+.gallery .main-image .gallery-image {
+  width: 100%;
+  height: auto;
+}
+
+.gallery .thumbnails {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.gallery .thumbnail {
+  width: 200px;
+  height: auto;
+}
+
+.gallery .thumbnail .gallery-thumbnail {
+  width: 100%;
+  height: auto;
+  transition: transform 0.3s ease;
+  cursor: pointer;
+}
+
+.gallery .thumbnail:hover .gallery-thumbnail {
+  transform: scale(1.1);
+}
+
+.thumbnail {
+  box-shadow: none;
+}
+.main-display {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.thumbnail:hover {
+  transform: scale(1.1);
+  box-shadow: 0px 0px 10px 3px rgba(0,0,0,0.75);
+}
+@media only screen and (max-width: 600px) {
+  .gallery .thumbnails {
+    display: flex;
+    justify-content: center;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    gap: 10px;
+  }
+
+  .gallery .thumbnail {
+    width: 100px;
+    height: auto;
+  }
+
+  /* Chrome, Safari, and Edge scrollbar styles */
+  .gallery .thumbnails::-webkit-scrollbar {
+    width: 12px;
+  }
+
+  .gallery .thumbnails::-webkit-scrollbar-track {
+    background: #f5f5f5;
+  }
+
+  .gallery .thumbnails::-webkit-scrollbar-thumb {
+    background-color: #ccc;
+    border-radius: 20px;
+  }
+}
+</style>
