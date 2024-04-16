@@ -38,13 +38,14 @@ Predicate Estimation Performance: This chart compares the performance of our pro
     caption=""
 
     alt_text="Alt text" 
-    height=400
+    height=700
 %}
 The R@50 performance of two models CREPE, UVTransE (vision only), while also showing the frequency of each predicate. Predicates are color-coded based on their categories: `Head' (purple), `Mid' (olive), and `Tail' (orange). The recall values are shown as dotted lines, while the predicate frequencies are displayed as blue bars.
 {% include add_image.html 
     image="assets/img/long_tail.png"
     caption="" 
     alt_text="Alt text" 
+    height=400
 %}
 
 # Qualitative Results on Visual Genome Dataset
