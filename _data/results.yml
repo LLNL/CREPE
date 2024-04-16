@@ -1,8 +1,0 @@
-- src: "assets/img/VG.png"
-  caption: "Each sub-figure illustrates the relationship between the subject (yellow box) and the object (green box), accompanied by the top five predictions made by CREPE. The accurate prediction is emphasized in red. Notably, in the first column of the third row, although the ground truth label is <flag, on, pole>, CREPE makes a more suitable prediction with <flag, hanging from, pole>, thus indicating that the evaluation metrics can be conservative."
-  alt: "Alt text 1"
-
-
-- src: "assets/img/unrel.png"
-  caption: "Using CREPE to estimate predicates for the Unrel dataset: Each sub-figure illustrates the relationship between the subject (yellow box) and the object (green box), accompanied by the top five predictions made by CREPE. The most suitable prediction is emphasized in red."
-  alt: "Alt text 4"

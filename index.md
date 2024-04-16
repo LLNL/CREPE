@@ -20,36 +20,16 @@ We explore the use of Vision-Language Models (VLMs), particularly CLIP, for pred
 %}
 
 
-# Method
+# CREPE: Uses learnable context vectors to obtain visually grounded text descriptors for union image
 
 {% include add_image.html 
     image="assets/img/pipeline.png"
-    caption="CREPE. An illustration of the proposed approach. CREPE uses learnable context vectors along with image-conditioned bias correction to obtain visually grounded text descriptors for an union image. Note that, the CLIP backbone is used to both perform the optimization for text prompt generation as well as producing the (stxt,otxt,uimg) embeddings for UVTransE." 
+    caption="" 
     alt_text="Alt text" 
 %}
 
-<!-- 
-<div style="font-size:18px">
-  <ol type="a">
-  <li><strong>Source training:</strong> Train source classifier and generative model for the source data distribution using StyleGAN-v2.</li>
-  <li><strong>Single-shot StyleGAN finetuning:</strong> Fine-tune the source generator using a single-shot example to generate images from the target domain using the SiSTA-U strategy.</li>
-  <li><strong>Synthetic data generation:</strong> Generate a synthetic dataset by sampling in the latent space of the target generator for the target domain using SiSTA-G strategy.</li>
-  <li><strong>Source-free UDA:</strong> Adapt the source classifier using the synthetically generated target domain data.</li>
-</ol>
-</div> -->
 
-
-<!-- {% include add_image.html 
-    image="assets/img/website-fig-teaser.png"
-    caption="Examples of synthetic data generated using SiSTA. <strong>Please follow the link by clicking the image</strong> to access additional examples for different benchmarks and distribution shifts." 
-    alt_text="Alt text" 
-    link="https://icml-sista.github.io/"
-    height="400"
-%} -->
-
-
-
-# Results
+# Quantitative Results
 
 {% include add_image.html 
     image="assets/img/table.png"
@@ -64,12 +44,15 @@ We explore the use of Vision-Language Models (VLMs), particularly CLIP, for pred
     alt_text="Alt text" 
 %}
 
-<!-- 
-SiSTA significantly improves generalization of face attribute detectors. Here is 1−shot SFDA performance (Accuracy %) averaged across different face attribute detection tasks, under varying levels distribution shift severity (Domains A, B & C) and a suite of image corruptions (Domain D). SiSTA consistently improves upon the SoTA baselines, and when combined with toolbox augmentations matches Full Target DA. -->
+# Qualitative Results on Visual Genome Dataset
+Each sub-figure illustrates the relationship between the subject (yellow box) and the object (green box), accompanied by the top five predictions made by CREPE. The accurate prediction is emphasized in red. Notably, in the first column of the third row, although the ground truth label is <flag, on, pole>, CREPE makes a more suitable prediction with <flag, hanging from, pole>, thus indicating that the evaluation metrics can be conservative.
 
-{% include add_gallery.html data="results" %}
+{% include add_gallery.html data="results_VG" %}
 
+# Qualitative Results on Unrel Dataset
+Using CREPE to estimate predicates for the Unrel dataset which contains unseen entities and relationship
 
+{% include add_gallery.html data="results_unrel" %}
 
 # Citation
 
@@ -78,6 +61,7 @@ SiSTA significantly improves generalization of face attribute detectors. Here is
   booktitle={International Conference on Machine Learning}, 
   title={Single-Shot Domain Adaptation via Target-Aware Generative Augmentations}, 
   year={2024}}
+}
 
 
 <!-- @INPROCEEDINGS{10096784,
